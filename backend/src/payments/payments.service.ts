@@ -44,13 +44,14 @@ export class PaymentsService {
       );
     }
 
-    // 4. Procesar el pago (Mock por ahora)
+    // 4. Procesar el pago en Wompi
     const paymentResponse =
-    await this.paymentProvider.processPayment(
-      dto,
-      transaction,
-    );
+      await this.paymentProvider.processPayment(
+        dto,
+        transaction,
+      );
 
+    // 5. Actualizar la transacción local
     await this.prisma.transaction.update({
       where: {
         id: transaction.id,
@@ -62,21 +63,21 @@ export class PaymentsService {
       },
     });
 
+    // 6. Descontar stock únicamente si el pago fue aprobado
     if (paymentResponse.status === 'APPROVED') {
-
       await this.prisma.product.update({
-    where: {
-      id: transaction.productId,
-    },
-    data: {
-      stock: {
-        decrement: 1,
-      },
-    },
-  });
+        where: {
+          id: transaction.productId,
+        },
+        data: {
+          stock: {
+            decrement: 1,
+          },
+        },
+      });
+    }
 
-}
-
-return paymentResponse;
+    // 7. Responder al cliente
+    return paymentResponse;
   }
 }
