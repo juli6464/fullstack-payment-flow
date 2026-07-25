@@ -64,13 +64,23 @@ export class PaymentProvider implements PaymentPort {
 
     console.log('Wompi Transaction:', wompiTransaction);
 
+    const transactionStatus =
+      await this.getTransactionStatus(
+        wompiTransaction.wompiId,
+      );
+
+    console.log(
+      'Transaction Status:',
+      transactionStatus,
+    );
+
     // Paso 6. Respuesta
     return {
       success: true,
       transactionId: dto.transactionId,
-      status: wompiTransaction.status as any,
-      message: 'Transaction created successfully',
-      providerReference: wompiTransaction.wompiId,
+      status: transactionStatus.status as any,
+      message: 'Payment processed',
+      providerReference: transactionStatus.id,
     };
   }
 
@@ -198,6 +208,44 @@ export class PaymentProvider implements PaymentPort {
     } catch (error: any) {
       console.error(
         'Create Transaction Error:',
+        error.response?.data ?? error.message,
+      );
+
+      throw error;
+    }
+  }
+  private async getTransactionStatus(
+    wompiTransactionId: string,
+  ): Promise<{
+    id: string;
+    status: string;
+  }> {
+
+    const url =
+      `${this.config.getOrThrow<string>('PAYMENT_BASE_URL')}/transactions/${wompiTransactionId}`;
+
+    try {
+
+      const response = await firstValueFrom(
+        this.http.get(
+          url,
+          {
+            headers: {
+              Authorization: `Bearer ${this.config.getOrThrow<string>('PAYMENT_PRIVATE_KEY')}`,
+            },
+          },
+        ),
+      );
+
+      return {
+        id: response.data.data.id,
+        status: response.data.data.status,
+      };
+
+    } catch (error: any) {
+
+      console.error(
+        'Get Transaction Error:',
         error.response?.data ?? error.message,
       );
 

@@ -41,9 +41,24 @@ export class PaymentsService {
       );
     }
 
-    // Procesar el pago (Mock)
-    const paymentResponse = await this.paymentProvider.processPayment(dto, transaction);
+    const paymentResponse =
+    await this.paymentProvider.processPayment(
+      dto,
+      transaction,
+    );
+
+    await this.prisma.transaction.update({
+      where: {
+        id: transaction.id,
+      },
+      data: {
+        wompiTransactionId:
+          paymentResponse.providerReference,
+        status: paymentResponse.status,
+      },
+    });
 
     return paymentResponse;
-  }
+      return paymentResponse;
+    }
 }

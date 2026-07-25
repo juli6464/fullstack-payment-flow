@@ -46,11 +46,37 @@ export class PaymentsService {
 
     // 4. Procesar el pago (Mock por ahora)
     const paymentResponse =
-      await this.paymentProvider.processPayment(
-          dto,
-          transaction,
+    await this.paymentProvider.processPayment(
+      dto,
+      transaction,
     );
-    // 5. Devolver respuesta
-    return paymentResponse;
+
+    await this.prisma.transaction.update({
+      where: {
+        id: transaction.id,
+      },
+      data: {
+        wompiTransactionId:
+          paymentResponse.providerReference,
+        status: paymentResponse.status,
+      },
+    });
+
+    if (paymentResponse.status === 'APPROVED') {
+
+      await this.prisma.product.update({
+    where: {
+      id: transaction.productId,
+    },
+    data: {
+      stock: {
+        decrement: 1,
+      },
+    },
+  });
+
+}
+
+return paymentResponse;
   }
 }
