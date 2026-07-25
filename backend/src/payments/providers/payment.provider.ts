@@ -11,6 +11,7 @@ import {
   TransactionWithRelations,
 } from '../ports/payment.port';
 import { AcceptanceTokens } from '../interfaces/acceptance-tokens.interface';
+import { generateIntegritySignature } from '../utils/signature.util';
 
 @Injectable()
 export class PaymentProvider implements PaymentPort {
@@ -52,6 +53,20 @@ export class PaymentProvider implements PaymentPort {
     'Payment Source:',
     paymentSourceId,
   );
+  const amountInCents =
+  Math.round(Number(transaction.total) * 100);
+
+  const signature =
+    generateIntegritySignature(
+      transaction.reference,
+      amountInCents,
+      'COP',
+      this.config.getOrThrow<string>(
+        'PAYMENT_INTEGRITY_KEY',
+      ),
+    );
+
+  console.log('Integrity Signature:', signature);
     // Por ahora seguimos respondiendo Mock
     return {
       success: true,
