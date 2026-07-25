@@ -27,6 +27,8 @@ export class PaymentsService {
       },
       include: {
         product: true,
+        customer: true,
+        delivery: true,
       },
     });
 
@@ -43,8 +45,11 @@ export class PaymentsService {
     }
 
     // 4. Procesar el pago (Mock por ahora)
-    const paymentResponse = await this.paymentProvider.processPayment(dto);
-
+    const paymentResponse =
+      await this.paymentProvider.processPayment(
+          dto,
+          transaction,
+    );
     // 5. Devolver respuesta
     return paymentResponse;
   }

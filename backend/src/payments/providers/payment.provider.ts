@@ -6,7 +6,11 @@ import { firstValueFrom } from 'rxjs';
 
 import { ProcessPaymentDto } from '../dto/process-payment.dto';
 import { PaymentResponse } from '../interfaces/payment-response.interface';
-import { PaymentPort } from '../ports/payment.port';
+import {
+  PaymentPort,
+  TransactionWithRelations,
+} from '../ports/payment.port';
+import { AcceptanceTokens } from '../interfaces/acceptance-tokens.interface';
 
 @Injectable()
 export class PaymentProvider implements PaymentPort {
@@ -17,32 +21,51 @@ export class PaymentProvider implements PaymentPort {
 
   async processPayment(
     dto: ProcessPaymentDto,
+    transaction: TransactionWithRelations,
   ): Promise<PaymentResponse> {
+  // Paso 1
+  const acceptanceTokens = await this.getAcceptanceTokens();
 
-    // Paso 1
-    const acceptanceToken = await this.getAcceptanceToken();
+  console.log(
+    'Acceptance Token:',
+    acceptanceTokens.acceptanceToken,
+  );
 
-    console.log('Acceptance Token:', acceptanceToken);
+  console.log(
+    'Personal Auth Token:',
+    acceptanceTokens.personalAuthToken,
+  );
 
-    // Paso 2
-    const cardToken = await this.tokenizeCard(dto);
+  // Paso 2
+  const cardToken = await this.tokenizeCard(dto);
 
-    console.log('Card Token:', cardToken);
+  console.log('Card Token:', cardToken);
 
+  const paymentSourceId =
+  await this.createPaymentSource(
+    acceptanceTokens,
+    cardToken,
+    transaction.customer.email,
+  );
+
+  console.log(
+    'Payment Source:',
+    paymentSourceId,
+  );
     // Por ahora seguimos respondiendo Mock
     return {
       success: true,
       transactionId: dto.transactionId,
-      status: 'APPROVED',
-      message: 'Mock payment approved',
-      providerReference: 'MOCK-123456',
+      status: 'PENDING',
+      message: 'Payment source created successfully',
+      providerReference: paymentSourceId.toString(),
     };
   }
 
   /**
-   * Obtiene el Acceptance Token del comercio
+   * Obtiene los tokens de aceptación del comercio
    */
-  private async getAcceptanceToken(): Promise<string> {
+  private async getAcceptanceTokens(): Promise<AcceptanceTokens> {
 
     const url =
       `${this.config.get<string>('PAYMENT_BASE_URL')}/merchants/${this.config.get<string>('PAYMENT_PUBLIC_KEY')}`;
@@ -51,7 +74,13 @@ export class PaymentProvider implements PaymentPort {
       this.http.get(url),
     );
 
-    return response.data.data.presigned_acceptance.acceptance_token;
+    return {
+      acceptanceToken:
+        response.data.data.presigned_acceptance.acceptance_token,
+
+      personalAuthToken:
+        response.data.data.presigned_personal_data_auth.acceptance_token,
+    };
   }
 
   /**
@@ -83,5 +112,50 @@ export class PaymentProvider implements PaymentPort {
     );
 
     return response.data.data.id;
+  }
+  private async createPaymentSource(
+    acceptanceTokens: AcceptanceTokens,
+    cardToken: string,
+    customerEmail: string,
+  ): Promise<number> {
+
+    const url =
+      `${this.config.get<string>('PAYMENT_BASE_URL')}/payment_sources`;
+
+    try {
+
+      const response = await firstValueFrom(
+        this.http.post(
+          url,
+          {
+            type: 'CARD',
+            token: cardToken,
+            customer_email: customerEmail,
+
+            acceptance_token:
+              acceptanceTokens.acceptanceToken,
+
+            accept_personal_auth:
+              acceptanceTokens.personalAuthToken,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.config.get<string>('PAYMENT_PRIVATE_KEY')}`,
+            },
+          },
+        ),
+      );
+
+      return response.data.data.id;
+
+    } catch (error: any) {
+
+      console.error(
+        'Payment Source Error:',
+        error.response?.data ?? error.message,
+      );
+
+      throw error;
+    }
   }
 }
