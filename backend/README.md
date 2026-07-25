@@ -1,45 +1,52 @@
 # Fullstack Payment Flow - Backend
 
-Backend API developed with **NestJS**, **TypeScript**, **Prisma ORM**, and **PostgreSQL** for a payment checkout flow.
+Backend API developed with **NestJS**, **TypeScript**, **Prisma ORM**, and **PostgreSQL** implementing a complete payment checkout flow integrated with **Wompi Sandbox**.
 
-## Tech Stack
+---
+
+# Tech Stack
 
 - NestJS
 - TypeScript
 - PostgreSQL
 - Prisma ORM
-- Swagger
-- Jest
 - Docker
+- Swagger
+- Axios
+- Helmet
+- Jest
 
 ---
 
-## Features
+# Features
 
-- Product catalog endpoint
+- Product catalog
 - Transaction creation
 - Customer registration
 - Delivery information
-- Payment processing workflow
-- Prisma ORM integration
+- Payment processing with Wompi Sandbox
+- Card tokenization
+- Payment Source creation
+- Integrity Signature generation
+- Wompi transaction creation
+- Transaction status synchronization
+- Automatic inventory update after approved payments
 - Swagger API documentation
-- Request validation using class-validator
+- Request validation
 - Seed script for sample products
-- Clean modular architecture
-- Payment Provider abstraction (Ports & Adapters ready)
+- Ports & Adapters (Hexagonal Architecture)
 
 ---
 
-## Requirements
+# Requirements
 
 - Node.js 20+
 - Docker Desktop
-- PostgreSQL (Docker)
 - npm
 
 ---
 
-## Installation
+# Installation
 
 Clone the repository
 
@@ -56,7 +63,7 @@ npm install
 
 ---
 
-## Environment Variables
+# Environment Variables
 
 Create a `.env` file.
 
@@ -65,7 +72,7 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/payment_flow?schema=
 
 PORT=3000
 
-PAYMENT_BASE_URL=https://sandbox.wompi.co/v1
+PAYMENT_BASE_URL=https://api-sandbox.co.uat.wompi.dev/v1
 
 PAYMENT_PUBLIC_KEY=
 
@@ -76,7 +83,9 @@ PAYMENT_INTEGRITY_KEY=
 
 ---
 
-## Start PostgreSQL
+# Database
+
+Start PostgreSQL
 
 ```bash
 docker compose up -d
@@ -93,10 +102,6 @@ docker run --name payment-db \
 -d postgres:16
 ```
 
----
-
-## Prisma
-
 Generate Prisma Client
 
 ```bash
@@ -109,7 +114,7 @@ Run migrations
 npx prisma migrate dev
 ```
 
-Seed database
+Seed products
 
 ```bash
 npx prisma db seed
@@ -123,7 +128,7 @@ npx prisma studio
 
 ---
 
-## Run the application
+# Run the application
 
 Development
 
@@ -140,9 +145,9 @@ npm run start:prod
 
 ---
 
-## API Documentation
+# API Documentation
 
-Swagger documentation is available at:
+Swagger is available at
 
 ```
 http://localhost:3000/api
@@ -150,31 +155,81 @@ http://localhost:3000/api
 
 ---
 
-## Available Endpoints
+# Available Endpoints
 
-### Products
+## Products
 
 ```
 GET /products
 ```
 
-### Transactions
+Returns the available product catalog.
+
+---
+
+## Transactions
 
 ```
 POST /transactions
+GET /transactions
+GET /transactions/{id}
 ```
 
-### Payments
+Allows creating and querying purchase transactions.
+
+---
+
+## Payments
 
 ```
 POST /payments/process
 ```
 
+Processes a payment through the Wompi Sandbox API.
+
 ---
 
-## Testing
+# Checkout Flow
 
-Run unit tests
+```
+GET /products
+
+↓
+
+POST /transactions
+
+↓
+
+POST /payments/process
+
+↓
+
+GET /transactions/{id}
+```
+
+---
+
+# Security
+
+- Helmet security headers
+- DTO validation
+- Global ValidationPipe
+- Input sanitization
+- Environment variables
+
+---
+
+# Architecture
+
+The payment integration follows a **Ports & Adapters (Hexagonal Architecture)** approach.
+
+Business logic depends on the `PaymentPort` abstraction while the Wompi integration is implemented as an adapter (`PaymentProvider`). This allows replacing the payment gateway without modifying the application layer.
+
+---
+
+# Testing
+
+Run tests
 
 ```bash
 npm test
@@ -188,45 +243,18 @@ npm run test:cov
 
 ---
 
-## Project Structure
-
-```
-src/
-
-products/
-
-transactions/
-
-payments/
-
-customers/
-
-deliveries/
-
-prisma/
-
-common/
-```
-
----
-## Architecture
-
-The payment module follows a **Ports & Adapters (Hexagonal)** approach.
-
-Business logic depends on a `PaymentPort` abstraction while the external payment gateway is implemented through a provider adapter, allowing different payment gateways to be plugged in without modifying the application layer.
-
----
-## Current Status
+# Current Status
 
 - ✅ Product API
-- ✅ Transaction workflow
-- ✅ Payment workflow (Mock Provider)
+- ✅ Transaction API
+- ✅ Payment API
+- ✅ Wompi Sandbox Integration
 - ✅ PostgreSQL
 - ✅ Prisma ORM
+- ✅ Docker
 - ✅ Swagger
 - ✅ Request Validation
-- 🚧 Payment Gateway Integration
+- ✅ Security Headers (Helmet)
+- ✅ Ports & Adapters
 - 🚧 Unit Tests
 - 🚧 Cloud Deployment
-
----
