@@ -60,9 +60,9 @@ export class TransactionsService {
     const DELIVERY_FEE = 10000;
 
     const total =
-        Number(product.price) +
-        PAYMENT_CONSTANTS.BASE_FEE +
-        PAYMENT_CONSTANTS.DELIVERY_FEE;
+      Number(product.price) +
+      PAYMENT_CONSTANTS.BASE_FEE +
+      PAYMENT_CONSTANTS.DELIVERY_FEE;
 
     // 6. Generar referencia
     const reference = `TX-${Date.now()}`;
@@ -91,5 +91,35 @@ export class TransactionsService {
       status: transaction.status,
       total: transaction.total,
     };
+  }
+  async findOne(id: string) {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        product: true,
+        customer: true,
+        delivery: true,
+      },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    return transaction;
+  }
+  async findAll() {
+    return this.prisma.transaction.findMany({
+      include: {
+        product: true,
+        customer: true,
+        delivery: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }

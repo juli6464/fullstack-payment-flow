@@ -65,8 +65,6 @@ DATABASE_URL="postgresql://postgres:postgres@localhost:5432/payment_flow?schema=
 
 PORT=3000
 
-PAYMENT_PROVIDER=mock
-
 PAYMENT_BASE_URL=https://sandbox.wompi.co/v1
 
 PAYMENT_PUBLIC_KEY=
