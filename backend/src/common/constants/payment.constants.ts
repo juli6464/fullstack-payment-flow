@@ -1,0 +1,4 @@
+export const PAYMENT_CONSTANTS = {
+  BASE_FEE: 5000,
+  DELIVERY_FEE: 10000,
+};

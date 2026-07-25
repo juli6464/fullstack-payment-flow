@@ -6,6 +6,7 @@ import {
 
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { PAYMENT_CONSTANTS } from '../common/constants/payment.constants';
 
 @Injectable()
 export class TransactionsService {
@@ -59,9 +60,9 @@ export class TransactionsService {
     const DELIVERY_FEE = 10000;
 
     const total =
-      Number(product.price) +
-      BASE_FEE +
-      DELIVERY_FEE;
+        Number(product.price) +
+        PAYMENT_CONSTANTS.BASE_FEE +
+        PAYMENT_CONSTANTS.DELIVERY_FEE;
 
     // 6. Generar referencia
     const reference = `TX-${Date.now()}`;
@@ -73,8 +74,8 @@ export class TransactionsService {
         status: 'PENDING',
 
         productAmount: product.price,
-        baseFee: BASE_FEE,
-        deliveryFee: DELIVERY_FEE,
+        baseFee: PAYMENT_CONSTANTS.BASE_FEE,
+        deliveryFee: PAYMENT_CONSTANTS.DELIVERY_FEE,
         total,
 
         productId: product.id,

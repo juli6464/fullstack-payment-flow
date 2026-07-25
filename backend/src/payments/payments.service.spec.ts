@@ -1,18 +1,48 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PaymentsService } from './payments.service';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
-describe('PaymentsService', () => {
-  let service: PaymentsService;
+import { PrismaService } from '../prisma/prisma.service';
+import { ProcessPaymentDto } from './dto/process-payment.dto';
+import { PaymentProvider } from './providers/payment.provider';
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [PaymentsService],
-    }).compile();
+@Injectable()
+export class PaymentsService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paymentProvider: PaymentProvider,
+  ) {}
 
-    service = module.get<PaymentsService>(PaymentsService);
-  });
+  async processPayment(dto: ProcessPaymentDto) {
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    // Buscar la transacción
+    const transaction = await this.prisma.transaction.findUnique({
+      where: {
+        id: dto.transactionId,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    // Validar existencia
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    // Validar estado
+    if (transaction.status !== 'PENDING') {
+      throw new BadRequestException(
+        'Transaction has already been processed',
+      );
+    }
+
+    // Procesar el pago (Mock)
+    const paymentResponse =
+      await this.paymentProvider.processPayment(dto);
+
+    return paymentResponse;
+  }
+}
