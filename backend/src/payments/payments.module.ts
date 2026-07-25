@@ -3,14 +3,16 @@ import { Module } from '@nestjs/common';
 
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
-import { PaymentProvider } from './providers/payment.provider';
 import { PAYMENT_PORT } from './ports/payment.port';
+import { PaymentProvider } from './providers/payment.provider';
 
 @Module({
   imports: [
     HttpModule,
   ],
-  controllers: [PaymentsController],
+  controllers: [
+    PaymentsController,
+  ],
   providers: [
     PaymentsService,
     {
