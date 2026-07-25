@@ -1,18 +1,22 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { ProcessPaymentDto } from './dto/process-payment.dto';
-import { PaymentProvider } from './providers/payment.provider';
+import { PAYMENT_PORT } from './ports/payment.port';
+import type { PaymentPort } from './ports/payment.port';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly paymentProvider: PaymentProvider,
+
+    @Inject(PAYMENT_PORT)
+    private readonly paymentProvider: PaymentPort,
   ) {}
 
   async processPayment(dto: ProcessPaymentDto) {
@@ -39,8 +43,7 @@ export class PaymentsService {
     }
 
     // 4. Procesar el pago (Mock por ahora)
-    const paymentResponse =
-      await this.paymentProvider.processPayment(dto);
+    const paymentResponse = await this.paymentProvider.processPayment(dto);
 
     // 5. Devolver respuesta
     return paymentResponse;
