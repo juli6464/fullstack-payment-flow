@@ -1,3 +1,13 @@
+import { Typography } from '@mui/material';
+
+import MainLayout from '../layout/MainLayout';
+
 export default function CheckoutPage() {
-  return <h1>Checkout</h1>;
+  return (
+    <MainLayout>
+      <Typography variant="h4">
+        Checkout
+      </Typography>
+    </MainLayout>
+  );
 }
