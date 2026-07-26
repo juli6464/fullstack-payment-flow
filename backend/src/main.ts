@@ -8,10 +8,13 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Security headers (OWASP)
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
+
   app.use(helmet());
 
-  // Global validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -20,7 +23,6 @@ async function bootstrap() {
     }),
   );
 
-  // Swagger
   const config = new DocumentBuilder()
     .setTitle('Payment Flow API')
     .setDescription('Technical Test')
@@ -31,12 +33,6 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
 
-  // Start application
   await app.listen(process.env.PORT ?? 3000);
-
-  console.log(
-    `🚀 API running at http://localhost:${process.env.PORT ?? 3000}/api`,
-  );
 }
-
 bootstrap();
