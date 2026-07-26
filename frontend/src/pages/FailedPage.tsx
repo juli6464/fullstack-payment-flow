@@ -4,12 +4,22 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { useNavigate } from 'react-router-dom';
 
-export default function SuccessPage() {
+import ErrorIcon from '@mui/icons-material/Error';
+
+import {
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
+
+export default function FailedPage() {
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const status =
+    location.state?.status ?? 'UNKNOWN';
 
   return (
     <Box
@@ -24,8 +34,8 @@ export default function SuccessPage() {
           textAlign: 'center',
         }}
       >
-        <CheckCircleIcon
-          color="success"
+        <ErrorIcon
+          color="error"
           sx={{ fontSize: 80 }}
         />
 
@@ -33,22 +43,19 @@ export default function SuccessPage() {
           variant="h4"
           mt={2}
         >
-          Payment Successful
+          Payment Failed
         </Typography>
 
-        <Typography
-          color="text.secondary"
-          mt={2}
-        >
-          Your order has been processed successfully.
+        <Typography mt={2}>
+          Status: {status}
         </Typography>
 
         <Button
           sx={{ mt: 4 }}
           variant="contained"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/checkout')}
         >
-          Continue Shopping
+          Try Again
         </Button>
 
       </Paper>

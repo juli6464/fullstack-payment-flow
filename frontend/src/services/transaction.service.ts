@@ -1,29 +1,35 @@
 import { api } from '../api/axios';
 
-import {
-  CreateTransactionRequest,
-  TransactionResponse,
-} from '../types/transaction';
+export interface CreateTransactionRequest {
+  productId: string;
+  customer: {
+    fullName: string;
+    email: string;
+    phone: string;
+  };
+  delivery: {
+    address: string;
+    city: string;
+    department: string;
+    postalCode: string;
+  };
+}
+
+export interface CreateTransactionResponse {
+  id: string;
+  reference: string;
+  status: string;
+  total: string;
+}
 
 export async function createTransaction(
   data: CreateTransactionRequest,
-): Promise<TransactionResponse> {
-  const response = await api.post<TransactionResponse>(
+): Promise<CreateTransactionResponse> {
+
+  const response = await api.post<CreateTransactionResponse>(
     '/transactions',
     data,
   );
-
-  return response.data;
-}
-
-export async function getTransaction(id: string) {
-  const response = await api.get(`/transactions/${id}`);
-
-  return response.data;
-}
-
-export async function getTransactions() {
-  const response = await api.get('/transactions');
 
   return response.data;
 }
