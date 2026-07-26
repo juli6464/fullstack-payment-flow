@@ -22,7 +22,7 @@ export default function AppRouter() {
         />
 
         <Route
-          path="/success"
+          path="/success/:id"
           element={<SuccessPage />}
         />
 

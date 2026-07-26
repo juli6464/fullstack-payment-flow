@@ -1,4 +1,5 @@
 import { api } from '../api/axios';
+import type { TransactionDetail } from '../types/transaction-detail';
 
 export interface CreateTransactionRequest {
   productId: string;
@@ -29,6 +30,17 @@ export async function createTransaction(
   const response = await api.post<CreateTransactionResponse>(
     '/transactions',
     data,
+  );
+
+  return response.data;
+}
+
+export async function getTransactionById(
+  id: string,
+): Promise<TransactionDetail> {
+
+  const response = await api.get<TransactionDetail>(
+    `/transactions/${id}`,
   );
 
   return response.data;

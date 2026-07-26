@@ -80,7 +80,7 @@ export default function CheckoutPage() {
 
       if (payment.status === 'APPROVED') {
 
-        navigate('/success');
+        navigate(`/success/${transaction.id}`);
 
       } else {
 
