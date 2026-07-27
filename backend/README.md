@@ -61,27 +61,6 @@ Install dependencies
 ```bash
 npm install
 ```
-
----
-
-# Environment Variables
-
-Create a `.env` file.
-
-```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/payment_flow?schema=public"
-
-PORT=3000
-
-PAYMENT_BASE_URL=https://api-sandbox.co.uat.wompi.dev/v1
-
-PAYMENT_PUBLIC_KEY=
-
-PAYMENT_PRIVATE_KEY=
-
-PAYMENT_INTEGRITY_KEY=
-```
-
 ---
 
 # Database

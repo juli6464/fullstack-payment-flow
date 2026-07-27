@@ -2,7 +2,7 @@
 
 Frontend application developed with **React**, **TypeScript**, **Vite**, and **Material UI** for the Fullstack Payment Flow technical challenge.
 
-The application allows users to browse products, complete a secure checkout process, simulate payments through a NestJS backend integrated with the Wompi Sandbox API, and view the transaction result.
+The application allows users to browse products, complete a secure checkout process, simulate payments through a NestJS backend integrated with the Payment Sandbox API, and view the transaction result.
 
 ---
 
@@ -176,7 +176,7 @@ The project includes unit tests for:
 
 # Payment Provider
 
-The frontend communicates with a NestJS backend that integrates with the **Wompi Sandbox API**.
+The frontend communicates with a NestJS backend that integrates with the **Payment Sandbox API**.
 
 Flow:
 
