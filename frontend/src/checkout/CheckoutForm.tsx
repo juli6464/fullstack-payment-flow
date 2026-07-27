@@ -57,7 +57,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
   }, [reset]);
 
   // Guardar automáticamente mientras escribe
-  const values = watch();
+//   const values = watch();
 
   useEffect(() => {
     const subscription = watch((value) => {
