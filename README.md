@@ -102,6 +102,7 @@ npm run dev
 
 ---
 
+
 # 🔄 Checkout Flow
 
 1. Browse available products.

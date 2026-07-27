@@ -2,25 +2,24 @@
 
 Frontend application developed with **React**, **TypeScript**, **Vite**, and **Material UI** for the Fullstack Payment Flow technical challenge.
 
-The application allows users to browse products, complete a secure checkout process, simulate payments through a Wompi Sandbox integration, and view the transaction result.
+The application allows users to browse products, complete a secure checkout process, simulate payments through a NestJS backend integrated with the Wompi Sandbox API, and view the transaction result.
 
 ---
 
 # Features
 
 - Product catalog
-- Product detail and order summary
-- Checkout form
-- Form validation with React Hook Form + Zod
-- Input sanitization (letters, numbers, phone and card fields)
+- Order summary
+- Checkout flow
 - Payment processing
-- Transaction creation
-- Payment status pages (Success / Failed)
+- Success and Failed payment pages
 - Responsive design
-- Loading states during payment processing
 - Checkout persistence after browser refresh
+- Loading indicators
+- Form validation with React Hook Form + Zod
+- Input sanitization
 - Redux Toolkit state management
-- API integration using Axios
+- Axios API integration
 
 ---
 
@@ -36,16 +35,18 @@ The application allows users to browse products, complete a secure checkout proc
 - React Hook Form
 - Zod
 - Vitest
+- Testing Library
 
 ---
 
 # Project Structure
 
-```
+```text
 src/
 │
 ├── api/
 ├── assets/
+├── checkout/
 ├── components/
 ├── layout/
 ├── pages/
@@ -75,7 +76,7 @@ Clone the repository
 git clone <repository-url>
 ```
 
-Go to the project
+Enter the project
 
 ```bash
 cd frontend
@@ -99,7 +100,7 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
-# Run the project
+# Running the Application
 
 Development
 
@@ -123,7 +124,7 @@ npm run preview
 
 # Testing
 
-Run tests
+Run all tests
 
 ```bash
 npm test
@@ -135,47 +136,69 @@ Run coverage
 npm run test:coverage
 ```
 
+The project includes unit tests for:
+
+- API layer
+- Services
+- Checkout flow
+- Redux slice
+- Validation schemas
+- Reusable form components
+- Main pages
+
 ---
+
+# Quality
+
+- ✅ TypeScript
+- ✅ React Hook Form
+- ✅ Zod validation
+- ✅ Redux Toolkit
+- ✅ Axios API layer
+- ✅ Unit tests with Vitest
+- ✅ Testing Library
+- ✅ Coverage report (>80%)
+
+---
+
+# Payment Flow
+
+1. Browse available products.
+2. Select a product.
+3. Complete the checkout form.
+4. Create the transaction.
+5. Process the payment.
+6. Display the payment result.
+7. Update product stock.
+8. Clear checkout information after a successful purchase.
+
+---
+
 # Payment Provider
 
-The frontend communicates with a NestJS backend that integrates with the Wompi Sandbox API.
+The frontend communicates with a NestJS backend that integrates with the **Wompi Sandbox API**.
 
-The payment flow consists of:
+Flow:
 
 - Create transaction
 - Process payment
-- Display transaction result
-- Update product stock
-
----
-# Payment Flow
-
-1. Select a product.
-2. Go to Checkout.
-3. Complete customer information.
-4. Complete payment information.
-5. A transaction is created.
-6. Payment is processed through the backend.
-7. If approved:
-   - Success page is displayed.
-   - Product stock is updated.
-   - Checkout information is cleared.
-8. If rejected:
-   - Failed page is displayed.
-   - Customer information is preserved.
+- Retrieve transaction details
+- Update stock
+- Display transaction status
 
 ---
 
 # Implemented Improvements
 
-- Client-side form validation
+- Client-side validation
 - Responsive layout
-- Checkout recovery after browser refresh
+- Checkout persistence using Local Storage
 - Automatic input sanitization
-- Payment status pages
-- Loading indicators while processing requests
-- Redux state management
-- Persistent checkout using Local Storage
+- Loading indicators
+- Success and Failed pages
+- Redux Toolkit state management
+- Modular service architecture
+- Reusable UI components
 
 ---
 
@@ -190,4 +213,4 @@ The payment flow consists of:
 - ✅ Success page
 - ✅ Failed page
 - ✅ API integration
-- 🚧 Unit tests
+- ✅ Unit tests

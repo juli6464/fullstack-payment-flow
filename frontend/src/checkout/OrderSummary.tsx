@@ -23,6 +23,7 @@ export default function OrderSummary({
         component="img"
         height="260"
         image={product.image}
+        alt={product.name}
       />
 
       <CardContent>
