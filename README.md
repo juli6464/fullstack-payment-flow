@@ -33,11 +33,11 @@ The project includes unit tests for both frontend and backend.
 
 ### Frontend
 
-![Frontend Coverage](docs/frontend-coverage.png)
+![Frontend Coverage](docs/frontend-tests.png)
 
 ### Backend
 
-![Backend Coverage](docs/backend-coverage.png)
+![Backend Coverage](docs/backend-tests.png)
 
 ---
 
