@@ -1,6 +1,6 @@
 # Fullstack Payment Flow - Backend
 
-Backend API developed with **NestJS**, **TypeScript**, **Prisma ORM**, and **PostgreSQL** implementing a complete payment checkout flow integrated with **Wompi Sandbox**.
+Backend API developed with **NestJS**, **TypeScript**, **Prisma ORM**, and **PostgreSQL** implementing a complete payment checkout flow integrated with **Payment Sandbox**.
 
 ---
 
@@ -24,11 +24,11 @@ Backend API developed with **NestJS**, **TypeScript**, **Prisma ORM**, and **Pos
 - Transaction creation
 - Customer registration
 - Delivery information
-- Payment processing with Wompi Sandbox
+- Payment processing with Payment Sandbox
 - Card tokenization
 - Payment Source creation
 - Integrity Signature generation
-- Wompi transaction creation
+- Payment transaction creation
 - Transaction status synchronization
 - Automatic inventory update after approved payments
 - Swagger API documentation
@@ -186,7 +186,7 @@ Allows creating and querying purchase transactions.
 POST /payments/process
 ```
 
-Processes a payment through the Wompi Sandbox API.
+Processes a payment through the Payment Sandbox API.
 
 ---
 
@@ -224,7 +224,7 @@ GET /transactions/{id}
 
 The payment integration follows a **Ports & Adapters (Hexagonal Architecture)** approach.
 
-Business logic depends on the `PaymentPort` abstraction while the Wompi integration is implemented as an adapter (`PaymentProvider`). This allows replacing the payment gateway without modifying the application layer.
+Business logic depends on the `PaymentPort` abstraction while the Payment integration is implemented as an adapter (`PaymentProvider`). This allows replacing the payment gateway without modifying the application layer.
 
 ---
 
@@ -261,7 +261,7 @@ npm test -- payments.service.spec.ts
 - ✅ Product API
 - ✅ Transaction API
 - ✅ Payment API
-- ✅ Wompi Sandbox Integration
+- ✅ Payment Sandbox Integration
 - ✅ PostgreSQL
 - ✅ Prisma ORM
 - ✅ Docker

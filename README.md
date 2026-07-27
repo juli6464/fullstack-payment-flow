@@ -1,8 +1,43 @@
 # 💳 Fullstack Payment Flow
 
-A full-stack e-commerce checkout application that simulates a real payment workflow using the Wompi Sandbox API.
+A full-stack e-commerce checkout application that simulates a complete payment workflow using a payment gateway sandbox API.
 
-The project includes a React frontend and a NestJS backend following a clean architecture approach, allowing customers to purchase products, process payments, and automatically update inventory after successful transactions.
+The project consists of a **React frontend** and a **NestJS backend** following a clean architecture approach. Customers can browse products, complete a checkout process, process payments, and automatically update product inventory after successful transactions.
+
+## 📸 Application Preview
+
+![Application](docs/fullstack-app.png)
+
+---
+
+# ☁️ Cloud Deployment
+
+| Service | Provider |
+|----------|----------|
+| Frontend | Vercel |
+| Backend | Render |
+| Database | PostgreSQL (Neon) |
+| API Documentation | Swagger |
+
+## Live URLs
+
+- 🌐 **Frontend:** https://fullstack-payment-flow.vercel.app
+- ⚙️ **Backend API:** https://fullstack-payment-flow.onrender.com
+- 📚 **Swagger:** https://fullstack-payment-flow.onrender.com/api
+
+---
+
+# 🧪 Test Coverage
+
+The project includes unit tests for both frontend and backend.
+
+### Frontend
+
+![Frontend Coverage](docs/frontend-coverage.png)
+
+### Backend
+
+![Backend Coverage](docs/backend-coverage.png)
 
 ---
 
@@ -12,46 +47,74 @@ The project includes a React frontend and a NestJS backend following a clean arc
 - Product checkout
 - Customer information capture
 - Delivery information
-- Payment processing
-- Wompi Sandbox integration
+- Credit card payment processing
+- Payment gateway sandbox integration
 - Transaction management
-- Automatic stock update
+- Automatic stock update after successful payments
 - Success and Failed payment pages
-- Checkout persistence after browser refresh
+- Checkout persistence using Local Storage
 - Responsive interface
-- Form validation with Zod
-- Unit testing
+- Form validation with React Hook Form + Zod
+- Input sanitization
+- Redux Toolkit state management
+- REST API documented with Swagger
+- Unit testing (Frontend & Backend)
+- Cloud deployment (Vercel + Render)
 
 ---
 
-# 🏗 Architecture
+# 🛠 Tech Stack
 
-### Frontend
+## Frontend
 
 - React 19
 - TypeScript
 - Vite
 - Material UI
-- Redux Toolkit
 - React Router
+- Redux Toolkit
 - React Hook Form
 - Zod
 - Axios
+- Vitest
 
-### Backend
+## Backend
 
 - NestJS
 - TypeScript
 - Prisma ORM
-- PostgreSQL
+- PostgreSQL (Neon)
 - Swagger
 - Jest
+- Payment Sandbox API
+
+### Backend Architecture
+
+The backend follows a **Hexagonal Architecture (Ports & Adapters)**.
+
+```
+React
+   │
+Axios
+   │
+NestJS Controllers
+   │
+Services
+   │
+Ports
+   │
+Payment Provider (Payment Sandbox)
+   │
+Prisma ORM
+   │
+PostgreSQL (Neon)
+```
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 payment-flow/
 │
 ├── backend/
@@ -61,6 +124,10 @@ payment-flow/
 ├── frontend/
 │   ├── src/
 │   └── README.md
+│
+├── docs/
+│   ├── frontend-coverage.png
+│   └── backend-coverage.png
 │
 └── README.md
 ```
@@ -72,10 +139,10 @@ payment-flow/
 Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/juli6464/fullstack-payment-flow.git
 ```
 
-Install dependencies for both projects.
+---
 
 ## Backend
 
@@ -84,7 +151,7 @@ cd backend
 npm install
 ```
 
-Run
+Development
 
 ```bash
 npm run start:dev
@@ -102,16 +169,15 @@ npm run dev
 
 ---
 
-
 # 🔄 Checkout Flow
 
 1. Browse available products.
 2. Select a product.
-3. Complete the checkout form.
+3. Complete customer and delivery information.
 4. Create a transaction.
-5. Process payment through Wompi Sandbox.
-6. Update stock if payment is approved.
-7. Display the transaction result.
+5. Process payment through payment Sandbox.
+6. Update product stock after successful payment.
+7. Display the payment result.
 
 ---
 
@@ -119,21 +185,31 @@ npm run dev
 
 - Product catalog
 - Checkout flow
-- Payment integration
+- Payment Sandbox integration
 - Transaction management
-- Stock management
+- Automatic stock management
 - Responsive UI
 - Form validation
-- Persistent checkout after refresh
-- Success and Failed pages
-- Unit testing
-- Swagger API documentation
+- Input sanitization
+- Persistent checkout after browser refresh
+- Success and Failed payment pages
+- REST API with Swagger documentation
+- Unit testing (Frontend & Backend)
+- Hexagonal Architecture (Ports & Adapters)
 
 ---
 
-# 📖 Documentation
+# 📚 API Documentation
 
-Each project contains its own documentation.
+Swagger UI is available at:
+
+https://fullstack-payment-flow.onrender.com/api
+
+---
+
+# 📖 Additional Documentation
+
+Each application contains its own README with implementation details.
 
 - `backend/README.md`
 - `frontend/README.md`
