@@ -1,10 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import HomePage from "../pages/HomePage";
 import { getProducts } from "../services/product.service";
-import { useAppDispatch } from "../store/hooks";
 import { selectProduct } from "../store/slices/checkoutSlice";
 
 const navigate = vi.fn();
@@ -19,17 +18,14 @@ vi.mock("../store/hooks", () => ({
 }));
 
 vi.mock("../layout/MainLayout", () => ({
-  default: ({ children }: any) => <>{children}</>,
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
 vi.mock("../components/product/ProductGrid", () => ({
   default: ({ products, onBuy }: any) => (
     <div>
       {products.map((p: any) => (
-        <button
-          key={p.id}
-          onClick={() => onBuy(p)}
-        >
+        <button key={p.id} onClick={() => onBuy(p)}>
           {p.name}
         </button>
       ))}
@@ -38,7 +34,9 @@ vi.mock("../components/product/ProductGrid", () => ({
 }));
 
 vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
+  const actual = await vi.importActual<typeof import("react-router-dom")>(
+    "react-router-dom",
+  );
 
   return {
     ...actual,
@@ -53,25 +51,28 @@ describe("HomePage", () => {
       name: "T-Shirt",
       description: "Classic",
       image: "",
-      price: 50000,
+      price: "50000",
       stock: 5,
     },
   ];
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  });
+
   it("loads products on mount", async () => {
-    vi.mocked(getProducts).mockResolvedValue(products);
+    vi.mocked(getProducts).mockResolvedValue(products as any);
 
     render(<HomePage />);
 
     expect(screen.getByText("Products")).toBeInTheDocument();
 
-    await waitFor(() =>
-      expect(screen.getByText("T-Shirt")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("T-Shirt")).toBeInTheDocument();
   });
 
   it("dispatches product and navigates to checkout", async () => {
-    vi.mocked(getProducts).mockResolvedValue(products);
+    vi.mocked(getProducts).mockResolvedValue(products as any);
 
     render(<HomePage />);
 
@@ -80,11 +81,28 @@ describe("HomePage", () => {
     await user.click(await screen.findByText("T-Shirt"));
 
     expect(dispatch).toHaveBeenCalledWith(
-      selectProduct(products[0]),
+      selectProduct(products[0] as any),
     );
 
     expect(localStorage.getItem("selected-product")).not.toBeNull();
-
     expect(navigate).toHaveBeenCalledWith("/checkout");
+  });
+
+  it("logs an error when loading products fails", async () => {
+    const errorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    vi.mocked(getProducts).mockRejectedValue(
+      new Error("API error"),
+    );
+
+    render(<HomePage />);
+
+    await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalled();
+    });
+
+    errorSpy.mockRestore();
   });
 });

@@ -5,7 +5,7 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import SuccessPage from "../pages/SuccessPage";
 
 import { getTransactionById } from "../services/transaction.service";
-import { useAppDispatch } from "../store/hooks";
+// import { useAppDispatch } from "../store/hooks";
 import { clearCheckout } from "../store/slices/checkoutSlice";
 
 const navigate = vi.fn();

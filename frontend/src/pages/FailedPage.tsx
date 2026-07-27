@@ -45,7 +45,7 @@ export default function FailedPage() {
           }}
         >
           <CardContent sx={{ p: 5 }}>
-            <Stack spacing={2} alignItems="center">
+            <Stack spacing={2} sx={{ alignItems: "center" }}>
               <Box
                 sx={{
                   width: 90,
@@ -65,7 +65,7 @@ export default function FailedPage() {
                 />
               </Box>
 
-              <Typography variant="h4" fontWeight="bold">
+              <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, mt: 3 }}>
                 Payment Failed
               </Typography>
 
@@ -122,7 +122,7 @@ export default function FailedPage() {
                 sm: "row",
               }}
               spacing={2}
-              mt={4}
+              sx={{ alignItems: "center" }}
             >
               <Button
                 fullWidth

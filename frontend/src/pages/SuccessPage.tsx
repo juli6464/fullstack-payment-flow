@@ -71,9 +71,11 @@ export default function SuccessPage() {
     return (
       <MainLayout>
         <Box
-          display="flex"
-          justifyContent="center"
-          mt={10}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 10,
+          }}
         >
           <CircularProgress />
         </Box>
@@ -106,10 +108,7 @@ export default function SuccessPage() {
           }}
         >
           <CardContent sx={{ p: 5 }}>
-            <Stack
-              spacing={2}
-              alignItems="center"
-            >
+            <Stack spacing={2} sx={{ alignItems: "center" }}>
               <Box
                 sx={{
                   width: 90,
@@ -129,10 +128,7 @@ export default function SuccessPage() {
                 />
               </Box>
 
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-              >
+              <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, mt: 3 }}>
                 Payment Successful
               </Typography>
 
@@ -166,7 +162,7 @@ export default function SuccessPage() {
                   sm: "row",
                 }}
                 spacing={3}
-                alignItems="center"
+                sx={{ alignItems: "center" }}
               >
                 <Box
                   component="img"
@@ -187,11 +183,8 @@ export default function SuccessPage() {
                   }}
                 />
 
-                <Box flex={1}>
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                  >
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     {transaction.product.name}
                   </Typography>
 
@@ -200,14 +193,14 @@ export default function SuccessPage() {
                   </Typography>
 
                   <Typography
-                    mt={2}
                     variant="body2"
                     color="text.secondary"
+                    sx={{ mt: 2 }}
                   >
                     Reference
                   </Typography>
 
-                  <Typography fontWeight="bold">
+                  <Typography sx={{ fontWeight: "bold" }}>
                     {transaction.reference}
                   </Typography>
                 </Box>
@@ -224,18 +217,12 @@ export default function SuccessPage() {
                 bgcolor: "#fafafa",
               }}
             >
-              <Typography
-                variant="h6"
-                mb={2}
-              >
+              <Typography variant="h6" sx={{ mb: 2 }}>
                 Order Summary
               </Typography>
 
               <Stack spacing={1.5}>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                >
+                <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                   <Typography>Product</Typography>
 
                   <Typography>
@@ -249,10 +236,7 @@ export default function SuccessPage() {
                   </Typography>
                 </Stack>
 
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                >
+                <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                   <Typography>Shipping</Typography>
 
                   <Typography>
@@ -266,10 +250,7 @@ export default function SuccessPage() {
                   </Typography>
                 </Stack>
 
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                >
+                <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                   <Typography>Platform Fee</Typography>
 
                   <Typography>
@@ -285,13 +266,10 @@ export default function SuccessPage() {
 
                 <Divider />
 
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                >
+                <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                   <Typography
                     variant="h6"
-                    fontWeight="bold"
+                    sx={{ fontWeight: "bold" }}
                   >
                     Total
                   </Typography>
@@ -299,7 +277,7 @@ export default function SuccessPage() {
                   <Typography
                     variant="h6"
                     color="primary"
-                    fontWeight="bold"
+                    sx={{ fontWeight: "bold" }}
                   >
                     {Number(transaction.total).toLocaleString(
                       "es-CO",
@@ -322,10 +300,7 @@ export default function SuccessPage() {
                 borderRadius: 3,
               }}
             >
-              <Typography
-                variant="h6"
-                mb={2}
-              >
+              <Typography variant="h6" sx={{ mb: 2 }}>
                 Shipping Address
               </Typography>
 
@@ -340,18 +315,16 @@ export default function SuccessPage() {
             </Paper>
 
             <Typography
-              mt={4}
+              variant="body2"
               color="text.secondary"
               align="center"
-              variant="body2"
+              sx={{ mt: 4 }}
             >
               Purchased on{" "}
               {new Date(transaction.createdAt).toLocaleString("es-CO")}
             </Typography>
 
-            <Stack
-              mt={4}
-            >
+            <Stack sx={{ mt: 4 }}>
               <Button
                 fullWidth
                 size="large"
