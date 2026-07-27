@@ -56,8 +56,8 @@ export class TransactionsService {
     });
 
     // 5. Calcular costos
-    const BASE_FEE = 5000;
-    const DELIVERY_FEE = 10000;
+    // const BASE_FEE = 5000;
+    // const DELIVERY_FEE = 10000;
 
     const total =
       Number(product.price) +

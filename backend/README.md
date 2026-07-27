@@ -35,6 +35,7 @@ Backend API developed with **NestJS**, **TypeScript**, **Prisma ORM**, and **Pos
 - Request validation
 - Seed script for sample products
 - Ports & Adapters (Hexagonal Architecture)
+- Coverage report (>80%)
 
 ---
 

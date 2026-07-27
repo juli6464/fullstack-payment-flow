@@ -138,4 +138,60 @@ describe('TransactionsService', () => {
       }),
     ).rejects.toThrow(BadRequestException);
   });
+  it('should return one transaction', async () => {
+    prismaMock.transaction.findUnique.mockResolvedValue({
+      id: 'tx-1',
+      reference: 'TX-123',
+      status: 'PENDING',
+      product: {},
+      customer: {},
+      delivery: {},
+    });
+
+    const result = await service.findOne('tx-1');
+
+    expect(result.id).toBe('tx-1');
+    expect(prismaMock.transaction.findUnique).toHaveBeenCalledWith({
+      where: {
+        id: 'tx-1',
+      },
+      include: {
+        product: true,
+        customer: true,
+        delivery: true,
+      },
+    });
+  });
+
+  it('should throw NotFoundException when transaction does not exist', async () => {
+    prismaMock.transaction.findUnique.mockResolvedValue(null);
+
+    await expect(service.findOne('tx-999')).rejects.toThrow(NotFoundException);
+  });
+
+  it('should return all transactions', async () => {
+    prismaMock.transaction.findMany.mockResolvedValue([
+      {
+        id: 'tx-1',
+      },
+      {
+        id: 'tx-2',
+      },
+    ]);
+
+    const result = await service.findAll();
+
+    expect(result).toHaveLength(2);
+
+    expect(prismaMock.transaction.findMany).toHaveBeenCalledWith({
+      include: {
+        product: true,
+        customer: true,
+        delivery: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  });
 });
