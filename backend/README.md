@@ -242,6 +242,18 @@ npm run test:cov
 ```
 
 ---
+Run transaction service tests only
+
+```bash
+npm test -- transactions.service.spec.ts
+```
+
+Run payment service tests only
+
+```bash
+npm test -- payments.service.spec.ts
+```
+---
 
 # Current Status
 
@@ -256,5 +268,5 @@ npm run test:cov
 - ✅ Request Validation
 - ✅ Security Headers (Helmet)
 - ✅ Ports & Adapters
-- 🚧 Unit Tests
+- ✅ Unit Tests
 - 🚧 Cloud Deployment
