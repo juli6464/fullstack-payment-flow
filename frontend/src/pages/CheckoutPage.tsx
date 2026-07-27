@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   }
 
   async function handleCheckout(data: CheckoutFormData) {
+    if (!product) return;
     setLoading(true);
 
     try {
@@ -89,10 +90,9 @@ export default function CheckoutPage() {
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
-        <Box textAlign="center">
+        <Box sx={{ textAlign: "center" }}>
           <CircularProgress color="inherit" />
-
-          <Typography mt={2}>Processing payment...</Typography>
+          <Typography sx={{ mt: 2 }}>Processing payment...</Typography>
         </Box>
       </Backdrop>
 

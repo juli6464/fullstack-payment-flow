@@ -10,7 +10,7 @@ describe("OrderSummary", () => {
     name: "T-Shirt",
     description: "Classic cotton t-shirt",
     image: "https://example.com/tshirt.jpg",
-    price: "50000",
+    price: 50000,
     stock: 5,
   };
 

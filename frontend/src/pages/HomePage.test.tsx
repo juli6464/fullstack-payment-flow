@@ -53,7 +53,7 @@ describe("HomePage", () => {
       name: "T-Shirt",
       description: "Classic",
       image: "",
-      price: "50000",
+      price: 50000,
       stock: 5,
     },
   ];
