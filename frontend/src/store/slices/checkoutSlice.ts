@@ -26,12 +26,16 @@ const checkoutSlice = createSlice({
     clearCheckout(state) {
       state.selectedProduct = null;
     },
+    restoreCheckout(state, action: PayloadAction<Product>) {
+      state.selectedProduct = action.payload;
+    },
   },
 });
 
 export const {
   selectProduct,
   clearCheckout,
+  restoreCheckout,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

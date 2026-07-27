@@ -30,7 +30,13 @@ export default function HomePage() {
 
   function handleBuy(product: Product) {
     dispatch(selectProduct(product));
-    navigate('/checkout');
+
+    localStorage.setItem(
+    "selected-product",
+    JSON.stringify(product),
+    );
+
+    navigate("/checkout");
   }
 
   return (

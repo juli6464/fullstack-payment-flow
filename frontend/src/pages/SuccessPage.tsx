@@ -19,7 +19,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import MainLayout from "../layout/MainLayout";
 
 import { getTransactionById } from "../services/transaction.service";
-
 import type { TransactionDetail } from "../types/transaction-detail";
 
 import { useAppDispatch } from "../store/hooks";
@@ -32,11 +31,15 @@ export default function SuccessPage() {
 
   const dispatch = useAppDispatch();
 
-  const [transaction, setTransaction] = useState<TransactionDetail | null>(
-    null,
-  );
+  const [transaction, setTransaction] =
+    useState<TransactionDetail | null>(null);
 
   const [loading, setLoading] = useState(true);
+
+  // Limpia el formulario al entrar al Success
+  useEffect(() => {
+    localStorage.removeItem("checkout-form");
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -57,6 +60,8 @@ export default function SuccessPage() {
   }
 
   function handleContinueShopping() {
+    localStorage.removeItem("selected-product");
+
     dispatch(clearCheckout());
 
     navigate("/");
@@ -65,7 +70,11 @@ export default function SuccessPage() {
   if (loading) {
     return (
       <MainLayout>
-        <Box display="flex" justifyContent="center" mt={10}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          mt={10}
+        >
           <CircularProgress />
         </Box>
       </MainLayout>
@@ -80,7 +89,7 @@ export default function SuccessPage() {
     <MainLayout>
       <Box
         sx={{
-          minHeight: "calc(100vh - 120px)", // ajusta si tu navbar tiene otra altura
+          minHeight: "calc(100vh - 120px)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -97,9 +106,10 @@ export default function SuccessPage() {
           }}
         >
           <CardContent sx={{ p: 5 }}>
-            {/* Header */}
-
-            <Stack spacing={2} alignItems="center">
+            <Stack
+              spacing={2}
+              alignItems="center"
+            >
               <Box
                 sx={{
                   width: 90,
@@ -119,23 +129,29 @@ export default function SuccessPage() {
                 />
               </Box>
 
-              <Typography variant="h4" fontWeight="bold">
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+              >
                 Payment Successful
               </Typography>
 
-              <Typography color="text.secondary" align="center">
-                Thank you
-                <strong> {transaction.customer.fullName}</strong>
+              <Typography
+                color="text.secondary"
+                align="center"
+              >
+                Thank you <strong>{transaction.customer.fullName}</strong>
                 <br />
                 Your payment has been approved successfully.
               </Typography>
 
-              <Chip color="success" label={transaction.status} />
+              <Chip
+                color="success"
+                label={transaction.status}
+              />
             </Stack>
 
             <Divider sx={{ my: 4 }} />
-
-            {/* Product */}
 
             <Paper
               variant="outlined"
@@ -144,38 +160,38 @@ export default function SuccessPage() {
                 borderRadius: 3,
               }}
             >
-<Stack
-  direction={{
-    xs: "column",
-    sm: "row",
-  }}
-  spacing={3}
-  alignItems={{
-    xs: "center",
-    sm: "center",
-  }}
->                
-<Box
-  component="img"
-  src={transaction.product.image}
-  alt={transaction.product.name}
-  sx={{
-    width: {
-      xs: 140,
-      sm: 120,
-    },
-    height: {
-      xs: 140,
-      sm: 120,
-    },
-    borderRadius: 3,
-    objectFit: "cover",
-    flexShrink: 0,
-  }}
-/>
+              <Stack
+                direction={{
+                  xs: "column",
+                  sm: "row",
+                }}
+                spacing={3}
+                alignItems="center"
+              >
+                <Box
+                  component="img"
+                  src={transaction.product.image}
+                  alt={transaction.product.name}
+                  sx={{
+                    width: {
+                      xs: 140,
+                      sm: 120,
+                    },
+                    height: {
+                      xs: 140,
+                      sm: 120,
+                    },
+                    borderRadius: 3,
+                    objectFit: "cover",
+                    flexShrink: 0,
+                  }}
+                />
 
                 <Box flex={1}>
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                  >
                     {transaction.product.name}
                   </Typography>
 
@@ -183,7 +199,11 @@ export default function SuccessPage() {
                     {transaction.product.description}
                   </Typography>
 
-                  <Typography mt={2} variant="body2" color="text.secondary">
+                  <Typography
+                    mt={2}
+                    variant="body2"
+                    color="text.secondary"
+                  >
                     Reference
                   </Typography>
 
@@ -196,8 +216,6 @@ export default function SuccessPage() {
 
             <Divider sx={{ my: 4 }} />
 
-            {/* Order Summary */}
-
             <Paper
               variant="outlined"
               sx={{
@@ -206,64 +224,96 @@ export default function SuccessPage() {
                 bgcolor: "#fafafa",
               }}
             >
-              <Typography variant="h6" mb={2}>
+              <Typography
+                variant="h6"
+                mb={2}
+              >
                 Order Summary
               </Typography>
 
               <Stack spacing={1.5}>
-                <Stack direction="row" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                >
                   <Typography>Product</Typography>
 
                   <Typography>
-                    {Number(transaction.productAmount).toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
+                    {Number(transaction.productAmount).toLocaleString(
+                      "es-CO",
+                      {
+                        style: "currency",
+                        currency: "COP",
+                      },
+                    )}
                   </Typography>
                 </Stack>
 
-                <Stack direction="row" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                >
                   <Typography>Shipping</Typography>
 
                   <Typography>
-                    {Number(transaction.deliveryFee).toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
+                    {Number(transaction.deliveryFee).toLocaleString(
+                      "es-CO",
+                      {
+                        style: "currency",
+                        currency: "COP",
+                      },
+                    )}
                   </Typography>
                 </Stack>
 
-                <Stack direction="row" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                >
                   <Typography>Platform Fee</Typography>
 
                   <Typography>
-                    {Number(transaction.baseFee).toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
+                    {Number(transaction.baseFee).toLocaleString(
+                      "es-CO",
+                      {
+                        style: "currency",
+                        currency: "COP",
+                      },
+                    )}
                   </Typography>
                 </Stack>
 
                 <Divider />
 
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography variant="h6" fontWeight="bold">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                  >
                     Total
                   </Typography>
 
-                  <Typography variant="h6" color="primary" fontWeight="bold">
-                    {Number(transaction.total).toLocaleString("es-CO", {
-                      style: "currency",
-                      currency: "COP",
-                    })}
+                  <Typography
+                    variant="h6"
+                    color="primary"
+                    fontWeight="bold"
+                  >
+                    {Number(transaction.total).toLocaleString(
+                      "es-CO",
+                      {
+                        style: "currency",
+                        currency: "COP",
+                      },
+                    )}
                   </Typography>
                 </Stack>
               </Stack>
             </Paper>
 
             <Divider sx={{ my: 4 }} />
-
-            {/* Shipping */}
 
             <Paper
               variant="outlined"
@@ -272,14 +322,20 @@ export default function SuccessPage() {
                 borderRadius: 3,
               }}
             >
-              <Typography variant="h6" mb={2}>
+              <Typography
+                variant="h6"
+                mb={2}
+              >
                 Shipping Address
               </Typography>
 
-              <Typography>{transaction.delivery.address}</Typography>
+              <Typography>
+                {transaction.delivery.address}
+              </Typography>
 
               <Typography color="text.secondary">
-                {transaction.delivery.city}, {transaction.delivery.department}
+                {transaction.delivery.city},{" "}
+                {transaction.delivery.department}
               </Typography>
             </Paper>
 
@@ -294,16 +350,11 @@ export default function SuccessPage() {
             </Typography>
 
             <Stack
-              direction={{
-                xs: "column",
-                sm: "row",
-              }}
-              spacing={2}
               mt={4}
             >
-
               <Button
                 fullWidth
+                size="large"
                 variant="contained"
                 onClick={handleContinueShopping}
               >

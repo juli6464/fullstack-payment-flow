@@ -1,141 +1,119 @@
-import { Box, Typography } from '@mui/material';
-import {
-  Navigate,
-  useNavigate,
-} from 'react-router-dom';
+import { useState } from "react";
 
-import OrderSummary from '../checkout/OrderSummary';
-import CheckoutForm from '../checkout/CheckoutForm';
+import { Box, CircularProgress, Backdrop, Typography } from "@mui/material";
 
-import MainLayout from '../layout/MainLayout';
+import { Navigate, useNavigate } from "react-router-dom";
 
-import { useAppSelector } from '../store/hooks';
+import OrderSummary from "../checkout/OrderSummary";
+import CheckoutForm from "../checkout/CheckoutForm";
 
-import type { CheckoutFormData } from '../schemas/checkout.schema';
+import MainLayout from "../layout/MainLayout";
 
-import { createTransaction } from '../services/transaction.service';
-import { processPayment } from '../services/payment.service';
+import { useAppSelector } from "../store/hooks";
+
+import type { CheckoutFormData } from "../schemas/checkout.schema";
+
+import { createTransaction } from "../services/transaction.service";
+
+import { processPayment } from "../services/payment.service";
 
 export default function CheckoutPage() {
-
   const navigate = useNavigate();
 
-  const product = useAppSelector(
-    (state) => state.checkout.selectedProduct,
-  );
+  const [loading, setLoading] = useState(false);
+
+  const product = useAppSelector((state) => state.checkout.selectedProduct);
 
   if (!product) {
     return <Navigate to="/" replace />;
   }
 
-  async function handleCheckout(
-    data: CheckoutFormData,
-  ) {
+  async function handleCheckout(data: CheckoutFormData) {
+    setLoading(true);
+
     try {
+      const transaction = await createTransaction({
+        productId: product.id,
 
-      // 1. Crear transacción
+        customer: {
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+        },
 
-      const transaction =
-        await createTransaction({
-          productId: product.id,
+        delivery: {
+          address: data.address,
+          city: data.city,
+          department: "Caldas",
+          postalCode: "170001",
+        },
+      });
 
-          customer: {
-            fullName: data.fullName,
-            email: data.email,
-            phone: data.phone,
-          },
+      const payment = await processPayment({
+        transactionId: transaction.id,
 
-          delivery: {
-            address: data.address,
-            city: data.city,
-            department: 'Caldas',
-            postalCode: '170001',
-          },
-        });
+        cardHolder: data.cardHolder,
+        cardNumber: data.cardNumber,
+        expMonth: data.expMonth,
+        expYear: data.expYear,
+        cvc: data.cvc,
+      });
 
-      console.log(
-        'Transaction:',
-        transaction,
-      );
-
-      // 2. Procesar pago
-
-      const payment =
-        await processPayment({
-          transactionId: transaction.id,
-
-          cardHolder: data.cardHolder,
-          cardNumber: data.cardNumber,
-          expMonth: data.expMonth,
-          expYear: data.expYear,
-          cvc: data.cvc,
-        });
-
-      console.log(
-        'Payment:',
-        payment,
-      );
-
-      // 3. Validar respuesta
-
-      if (payment.status === 'APPROVED') {
+      if (payment.status === "APPROVED") {
+        // Limpiar formulario guardado
+        localStorage.removeItem("checkout-form");
 
         navigate(`/success/${transaction.id}`);
-
       } else {
-
-        navigate('/failed', {
-            state: {
-                status: payment.status,
-            },
+        navigate("/failed", {
+          state: {
+            status: payment.status,
+          },
         });
-
       }
-
     } catch (error) {
-
       console.error(error);
 
-      navigate('/failed');
-
+      navigate("/failed");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <MainLayout>
-
-      <Typography
-        variant="h4"
-        sx={{ mb: 4 }}
+      <Backdrop
+        open={loading}
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
       >
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+
+          <Typography mt={2}>Processing payment...</Typography>
+        </Box>
+      </Backdrop>
+
+      <Typography variant="h4" sx={{ mb: 4 }}>
         Checkout
       </Typography>
 
       <Box
         sx={{
-          display: 'grid',
+          display: "grid",
           gridTemplateColumns: {
-            xs: '1fr',
-            md: '1fr 1fr',
+            xs: "1fr",
+            md: "1fr 1fr",
           },
           gap: 4,
         }}
       >
+        <OrderSummary product={product} />
 
-        <OrderSummary
-          product={product}
-        />
-
-        <Box>
-
-          <CheckoutForm
-            onSubmit={handleCheckout}
-          />
-
-        </Box>
-
+        <CheckoutForm onSubmit={handleCheckout} />
       </Box>
-
     </MainLayout>
   );
 }

@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { Button, Stack, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,27 +19,65 @@ export default function CheckoutForm({ onSubmit }: Props) {
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-      isSubmitting,
-      isValid,
-    },
+    watch,
+    reset,
+    formState: { errors, isSubmitting, isValid },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
 
     mode: "onChange",
 
     reValidateMode: "onChange",
+
+    defaultValues: {
+      fullName: "",
+      email: "",
+      address: "",
+      city: "",
+      phone: "",
+      cardHolder: "",
+      cardNumber: "",
+      expMonth: "",
+      expYear: "",
+      cvc: "",
+    },
   });
 
+  // Recuperar formulario después de un refresh
+  useEffect(() => {
+    const saved = localStorage.getItem("checkout-form");
+
+    if (!saved) return;
+
+    try {
+      reset(JSON.parse(saved));
+    } catch {
+      localStorage.removeItem("checkout-form");
+    }
+  }, [reset]);
+
+  // Guardar automáticamente mientras escribe
+  const values = watch();
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      localStorage.setItem("checkout-form", JSON.stringify(value));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  async function submitForm(data: CheckoutFormData) {
+    await onSubmit(data);
+  }
+
   return (
-    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+    <form noValidate onSubmit={handleSubmit(submitForm)}>
       <Typography variant="h5" sx={{ mb: 3 }}>
         Customer Information
       </Typography>
 
       <Stack spacing={2}>
-
         <AppTextField
           label="Full Name"
           variant="letters"
@@ -46,8 +86,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
           register={register("fullName")}
           error={!!errors.fullName}
           helperText={
-            errors.fullName?.message ??
-            "Only letters. Minimum 3 characters."
+            errors.fullName?.message ?? "Only letters. Minimum 3 characters."
           }
         />
 
@@ -58,10 +97,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
           autoComplete="email"
           register={register("email")}
           error={!!errors.email}
-          helperText={
-            errors.email?.message ??
-            "Example: user@email.com"
-          }
+          helperText={errors.email?.message ?? "Example: user@email.com"}
         />
 
         <AppTextField
@@ -71,8 +107,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
           register={register("address")}
           error={!!errors.address}
           helperText={
-            errors.address?.message ??
-            "Street, avenue and house number."
+            errors.address?.message ?? "Street, avenue and house number."
           }
         />
 
@@ -82,10 +117,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
           fullWidth
           register={register("city")}
           error={!!errors.city}
-          helperText={
-            errors.city?.message ??
-            "Only letters."
-          }
+          helperText={errors.city?.message ?? "Only letters."}
         />
 
         <AppTextField
@@ -96,10 +128,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
           autoComplete="tel"
           register={register("phone")}
           error={!!errors.phone}
-          helperText={
-            errors.phone?.message ??
-            "10 numeric digits."
-          }
+          helperText={errors.phone?.message ?? "10 numeric digits."}
         />
 
         <Typography variant="h5" sx={{ mt: 4 }}>
@@ -114,8 +143,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
           register={register("cardHolder")}
           error={!!errors.cardHolder}
           helperText={
-            errors.cardHolder?.message ??
-            "Name exactly as printed on the card."
+            errors.cardHolder?.message ?? "Name exactly as printed on the card."
           }
         />
 
@@ -127,14 +155,10 @@ export default function CheckoutForm({ onSubmit }: Props) {
           autoComplete="cc-number"
           register={register("cardNumber")}
           error={!!errors.cardNumber}
-          helperText={
-            errors.cardNumber?.message ??
-            "16 digits without spaces."
-          }
+          helperText={errors.cardNumber?.message ?? "16 digits without spaces."}
         />
 
         <Stack direction="row" spacing={2}>
-
           <AppTextField
             label="MM"
             variant="numbers"
@@ -142,10 +166,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
             fullWidth
             register={register("expMonth")}
             error={!!errors.expMonth}
-            helperText={
-              errors.expMonth?.message ??
-              "01-12"
-            }
+            helperText={errors.expMonth?.message ?? "01-12"}
           />
 
           <AppTextField
@@ -155,10 +176,7 @@ export default function CheckoutForm({ onSubmit }: Props) {
             fullWidth
             register={register("expYear")}
             error={!!errors.expYear}
-            helperText={
-              errors.expYear?.message ??
-              "Example: 28"
-            }
+            helperText={errors.expYear?.message ?? "Example: 28"}
           />
 
           <AppTextField
@@ -168,12 +186,8 @@ export default function CheckoutForm({ onSubmit }: Props) {
             fullWidth
             register={register("cvc")}
             error={!!errors.cvc}
-            helperText={
-              errors.cvc?.message ??
-              "3 digits."
-            }
+            helperText={errors.cvc?.message ?? "3 digits."}
           />
-
         </Stack>
 
         <Button
@@ -184,7 +198,6 @@ export default function CheckoutForm({ onSubmit }: Props) {
         >
           {isSubmitting ? "Processing..." : "Pay Now"}
         </Button>
-
       </Stack>
     </form>
   );
